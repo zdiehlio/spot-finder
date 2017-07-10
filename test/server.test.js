@@ -11,6 +11,7 @@ describe('server test', () => {
 
   it('should work', () => {
     return server.start()
+      .catch(err => expect(err).toNotExist())
       .then(() => server.start())
       .catch((err) => expect(err.message).toEqual('server already running'))
   })
@@ -22,6 +23,7 @@ describe('server test', () => {
 
   it('should stop', () => {
     return server.stop()
+      .catch(err => expect(err).toNotExist())
       .then(() => server.stop())
       .catch((err) => expect(err.message).toEqual('server not running'))
   })
