@@ -70,6 +70,7 @@ tags
 
 # env-files
 .env
+.test.env
 
 # coverage
 .nyc_output
