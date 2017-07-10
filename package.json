@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/zdiehlio/spot-finder/issues"
   },
-  "homepage": "https://github.com/zdiehlio/spot-finder#readme"
+  "homepage": "https://github.com/zdiehlio/spot-finder#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "mongoose": "^4.11.1",
+    "morgan": "^1.8.2"
+  }
 }
