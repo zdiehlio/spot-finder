@@ -7,7 +7,6 @@
     "start": "node index.js",
     "start-db": "mkdir -p ./db && mongod --dbpath ./db",
     "stop-db": "killall mongod",
-    "lint": "eslintrc",
     "test": "mocha"
   },
   "repository": {
