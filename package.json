@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nyc mocha",
-    "lint": "eslint ."
+    "lint": "eslint ./"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "mongoose": "^4.11.1",
+    "morgan": "^1.8.2",
     "superagent": "^3.5.2"
-  }
+  },
 }
