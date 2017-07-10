@@ -22,11 +22,11 @@ describe('start server', () => {
         })
     })
 
-    it('should respond with 400 invalid request body', () => {
-      return superagent.post(`${ROOT_URL}/api/profile`).send().catch(err => {
-        expect(err.status).toEqual(400)
-      })
-    })
+  //   it('should respond with 400 invalid request body', () => {
+  //     return superagent.post(`${ROOT_URL}/api/profile`).send().catch(err => {
+  //       expect(err.status).toEqual(400)
+  //     })
+  //   })
   })
 
 })
