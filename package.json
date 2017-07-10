@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "start-db": "mkdir -p ./db && mongod --dbpath ./db",
+    "stop-db": "killall mongod",
+    "lint": "eslint . ",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -16,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/zdiehlio/spot-finder/issues"
   },
-  "homepage": "https://github.com/zdiehlio/spot-finder#readme"
+  "homepage": "https://github.com/zdiehlio/spot-finder#readme",
+  "devDependencies": {
+    "expect": "^1.20.2",
+    "mocha": "^3.4.2",
+    "superagent": "^3.5.2"
+  }
 }
