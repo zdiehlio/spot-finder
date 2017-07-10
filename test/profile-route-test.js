@@ -14,17 +14,17 @@ describe('start server', () => {
   describe('testing POST /api/profile', () => {
     it('should respond with a profile', () => {
       return superagent.post(`${ROOT_URL}/api/profile`)
-        .send()
-        .end(res => {
+        .send({username: 'hello'})
+        .then(res => {
           expect(res.status).toEqual(200)
-          expect(res.body.username).toEqual(' ')
+          expect(res.body.username).toEqual('hello')
           expect(res.body._id).toExist()
         })
     })
 
     it('should respond with 400 invalid request body', () => {
       return superagent.post(`${ROOT_URL}/api/profile`).send().catch(err => {
-        expect(err.status).toEqual(404)
+        expect(err.status).toEqual(400)
       })
     })
   })
