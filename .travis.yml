@@ -16,3 +16,4 @@ sudo: required
 before_script: npm i
 script:
   - npm test
+  - npm run lint
