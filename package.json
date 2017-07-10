@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc mocha",
+    "lint": "eslint ./"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,18 @@
   "bugs": {
     "url": "https://github.com/zdiehlio/spot-finder/issues"
   },
-  "homepage": "https://github.com/zdiehlio/spot-finder#readme"
+  "homepage": "https://github.com/zdiehlio/spot-finder#readme",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.1",
+    "morgan": "^1.8.2",
+    "superagent": "^3.5.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "expect": "^1.20.2",
+    "mocha": "^3.4.2",
+    "nyc": "^11.0.3"
+  }
 }
