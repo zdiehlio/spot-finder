@@ -11,8 +11,8 @@ describe('server test', () => {
 
   it('should work', () => {
     return server.start()
-       .then(() => server.start())
-       .catch((err) => expect(err.message).toEqual('server already running'))
+      .then(() => server.start())
+      .catch((err) => expect(err.message).toEqual('server already running'))
   })
 
   it('should respond 404 to a bad url', () => {
