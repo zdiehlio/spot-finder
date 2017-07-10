@@ -3,10 +3,10 @@ const moment = require('moment')
 const mongoose = require('mongoose')
 
 const eventSchema = mongoose.Schema({
-  start: { type: Number, required: true },
-  end: { type: Number, required: true },
+  _start: { type: Number, required: true },
+  _end: { type: Number, required: true },
   numberOfPeople: { type: Number, required: true },
-  venueId: { type: mongoose.Schema.Types.ObjectId, default: null },
+  venue: { type: mongoose.Schema.Types.ObjectId, default: null },
   owner: { type: mongoose.Schema.Types.ObjectId, required: false },
   // TODO: change to "true"
 })
@@ -19,20 +19,20 @@ const eventSchema = mongoose.Schema({
 //
 // So any time we read or manipulate times, we should do so with Moment.js.
 
-eventSchema.virtual('startTime').get(function() {
-  return moment(this.start)
+eventSchema.virtual('start').get(function() {
+  return moment(this._start)
 })
 
-eventSchema.virtual('endTime').get(function() {
-  return moment(this.end)
+eventSchema.virtual('end').get(function() {
+  return moment(this._end)
 })
 
-eventSchema.virtual('startTime').set(function(time) {
-  this.start = time.valueOf()
+eventSchema.virtual('start').set(function(time) {
+  this._start = time.valueOf()
 })
 
-eventSchema.virtual('endTime').set(function(time) {
-  this.end = time.valueOf()
+eventSchema.virtual('end').set(function(time) {
+  this._end = time.valueOf()
 })
 
 const Event = mongoose.model('event', eventSchema)
