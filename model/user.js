@@ -32,11 +32,10 @@ userSchema.methods.createTokenSeed = function() {
   return new Promise((resolve, reject) => {
     let attempts = 1
     let firstSeedCreate = () => {
-      this.createTokenSeed = crypto.randomBytes(32).toString('hex')
-      console.log(this)
+      this.tokenSeed = crypto.randomBytes(32).toString('hex')
       this.save()
-        .then(resolve(this))
-        .catch(err => {
+        .then(() => resolve(this))
+        .catch(() => {
           if(attempts < 1) {
             return reject(new Error('Could not create token seed'))
           }

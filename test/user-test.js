@@ -1,9 +1,11 @@
+'use strict'
+console.log('Test File')
 const dotenv = require('dotenv')
 dotenv.config({ path: `${__dirname}/../.test.env`})
 const expect = require('expect')
 const superagent = require('superagent')
-const User = require('../model/user.js')
 
+const mockUser = require('./lib/mock-user.js')
 const server = require('../lib/server.js')
 
 const ROOT_URL = `http://localhost:${process.env.PORT}`
@@ -15,18 +17,21 @@ describe('Testing User', () => {
 
   describe('Testing user constructor', () => {
     it.only('Should create user Auth and return 200 status', () => {
-      return superagent.post(`${ROOT_URL}/api/users`)
-        .send(new User())
-        .then(res => {
-          expect(res.body.tokenSeed).toExist()
-          expect(res.body.passwordHash).toExist()
+      // const testUserInput = ({
+      //   passHash: '12345',
+      // })
+      return mockUser.createOne()
+        .then(testUser => {
+          console.log(testUser)
+          expect(testUser.tokenSeed).toExist()
+          expect(testUser.passHash).toExist()
         })
     })
-    it('Should respond with status of 400', () => {
-      return superagent.post(`${ROOT_URL}/api/users`)
-        .catch(res => {
-          expect(res.status).toEqual(400)
-        })
-    })
+  })
+  it('Should respond with status of 400', () => {
+    return superagent.post(`${ROOT_URL}/api/users`)
+      .catch(res => {
+        expect(res.status).toEqual(400)
+      })
   })
 })
