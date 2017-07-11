@@ -22,6 +22,12 @@ mockEvent.createOne = (owner = null) => {
   return new Event(mockEvent.createOneTestCase(owner)).save()
 }
 
+mockEvent.createOneWithVenue = (owner = null, venueId) => {
+  const event = mockEvent.createOneTestCase(owner)
+  event.venueId = venueId
+  return new Event(event).save()
+}
+
 mockEvent.createMany = (number) => {
   return Promise.all(
     new Array(number)

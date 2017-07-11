@@ -2,6 +2,8 @@
 const moment = require('moment')
 const mongoose = require('mongoose')
 
+const Venue = require('./venue.js')
+
 const eventSchema = mongoose.Schema({
   _start: { type: Number, required: true },
   _end: { type: Number, required: true },
@@ -38,6 +40,32 @@ eventSchema.virtual('start').set(function(time) {
 
 eventSchema.virtual('end').set(function(time) {
   this._end = time.valueOf()
+})
+
+eventSchema.pre('save', function(next) {
+  if(!this.venueId)
+    return next()
+  Venue.findById(this.venueId)
+    .then(venue => {
+      if(!venue.events.includes(this._id))
+        venue.events.push(this._id)
+      return venue.save()
+    })
+    .then(() => next())
+    .catch(err => next(err))
+})
+
+eventSchema.post('remove', function(removedEvent, next) {
+  if(!removedEvent.venueId)
+    return next()
+  Venue.findById(removedEvent.venueId)
+    .catch(() => next())
+    .then(venue => {
+      venue.events = venue.events.filter(event => event._id !== removedEvent._id)
+      return venue.save()
+    })
+    .then(() => next())
+    .catch(err => next(err))
 })
 
 const Event = mongoose.model('event', eventSchema)
