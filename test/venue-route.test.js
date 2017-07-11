@@ -27,8 +27,6 @@ describe('venue routes', () => {
 
   let testVenue
   it('should create a venue', () => {
-
-
     return Promise.resolve(mockVenue.createOneTestCase())
       .then(venue => testVenue = venue)
       .then(venue => {
