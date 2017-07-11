@@ -1,27 +1,27 @@
 'use strict'
 
-const Event = require('../model/event.js')
+const Venue = require('../model/venue.js')
 
 module.exports = {
-  create: (event) => {
-    return new Event(event)
+  create: (venue) => {
+    return new Venue(venue)
       .save()
   },
 
   read: (id) => {
-    return Event.findById(id)
+    return Venue.findById(id)
   },
 
   update: (id, patch) => {
-    return Event.findByIdAndUpdate(id, patch, { new: true })
+    return Venue.findByIdAndUpdate(id, patch, { new: true })
   },
 
   destroy: (id) => {
-    return Event.findByIdAndRemove(id)
+    return Venue.findByIdAndRemove(id)
   },
 
   index: (pageLength, pageNumber) => {
-    return Event.find({})
+    return Venue.find({})
       .sort({ start: 'asc' })
       .skip(Number(pageNumber) > 0 ? pageNumber - 1 : 0)
       .limit(pageLength)
