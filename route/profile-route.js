@@ -18,3 +18,9 @@ profileRouter.post('/api/profile', jsonParser, (req, res, next) => {
     .then(profile => res.json(profile))
     .catch(next)
 })
+profileRouter.get('/api/profile/:id', (req, res, next) => {
+  console.log('GET /api/profile/:id')
+  Profile.findById(req.params.id)
+    .then(profile => res.json(profile))
+    .catch(next)
+})
