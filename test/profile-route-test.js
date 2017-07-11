@@ -34,7 +34,6 @@ describe('start server', () => {
 
   describe('testing GET /api/profile/:id', () => {
     var tempProfile
-
     afterEach(() => Profile.remove({}))
     beforeEach(() => {
       return new Profile({
@@ -55,6 +54,15 @@ describe('start server', () => {
           expect(res.body.username).toEqual(tempProfile.username)
         })
     })
+    describe('testing PUT /api/profile', () => {
+      it('Should respond 200 with the updated profile', () => {
+        return superagent.put(`${ROOT_URL}/api/profile/${tempProfile._id}`)
+          .send({username: 'Hawk'})
+          .then(res => {
+            expect(res.status).toEqual(200)
+            expect(res.body.username).toEqual('Hawk')
+          })
+      })
+    })
   })
-
 })
