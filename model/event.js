@@ -28,6 +28,11 @@ eventSchema.virtual('end').get(function() {
 })
 
 eventSchema.virtual('start').set(function(time) {
+  console.log('setting start time for event: ')
+  console.dir(this)
+  console.log('----------')
+  console.log(time)
+  console.log(time.valueOf())
   this._start = time.valueOf()
 })
 

@@ -1,9 +1,12 @@
 'use strict'
+const moment = require('moment')
 
 const Event = require('../model/event.js')
 
 module.exports = {
   create: (event) => {
+    event.start = moment(event.start)
+    event.end = moment(event.end)
     return new Event(event)
       .save()
   },
