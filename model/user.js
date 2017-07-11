@@ -34,10 +34,12 @@ userSchema.methods.createTokenSeed = function() {
     let firstSeedCreate = () => {
       this.tokenSeed = crypto.randomBytes(32).toString('hex')
       this.save()
-        .then(() => resolve(this))
+        .then(() => {
+          resolve(this)
+        })
         .catch(() => {
           if(attempts < 1) {
-            return reject(new Error('Could not create token seed'))
+            return reject(new Error('booya Could not create token seed'))
           }
           attempts--
           firstSeedCreate()
@@ -54,11 +56,11 @@ userSchema.methods.createToken = function() {
     })
 }
 
-const User = module.exports = mongoose.model('user', userSchema)
+const User = module.exports = mongoose.model('authInfo', userSchema)
 
 User.create = function(data) {
   let pass = data.pass
   delete data.pass
-  return new User(data).createPassHash(pass)
+  return new User().createPassHash(pass)
     .then(user => user.createToken())
 }

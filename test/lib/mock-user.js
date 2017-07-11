@@ -15,8 +15,20 @@ mockUser.createOne = () => {
       user.createToken()
       return user
     })
-    // .then(token => {
-    //   result.token = token
-    //   return result
-    // })
+}
+
+mockUser.createOneWithPass = () => {
+  let result = {}
+  result.pass = faker.internet.password()
+  return new User()
+    .createPassHash(result.pass)
+    .then(user => {
+      result.user = user
+      user.createToken()
+      return user
+    })
+    .then(token => {
+      result.token = token
+      return result
+    })
 }
