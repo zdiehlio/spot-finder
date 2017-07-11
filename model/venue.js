@@ -3,14 +3,17 @@
 const mongoose = require('mongoose')
 
 const venueSchema = mongoose.Schema({
-  location: {type: String, required: true, minlength: 1},
-  amenities: [{type: String, required: true, minlength: 1}],
-  description: {type: String, required: true, minlength: 1},
-  images: {type: String, required: true, minlength: 1},
-  price: {type: Number, required: true, minlength: 1},
-  capacity: {type: Number, required: true, minlength: 1},
-  owner: {type: mongoose.Schema.Types.ObjectId, required: true},
-  events: [{type: mongoose.Schema.Types.ObjectId, required: null}],
+  name: {type: String, required: true},
+  address: {type: String, required: true},
+  capacity: {type: Number, required: true},
+  amenities: [{type: String}],
+  description: {type: String},
+  images: {type: String},
+  price: {type: Number},
+  owner: {type: mongoose.Schema.Types.ObjectId, required: false},
+  events: [{type: mongoose.Schema.Types.ObjectId, default: null}],
 })
 
-module.exports = mongoose.model('venue', venueSchema)
+const Venue = mongoose.model('venue', venueSchema)
+
+module.exports = Venue
