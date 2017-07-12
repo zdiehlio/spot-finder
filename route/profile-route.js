@@ -33,3 +33,10 @@ profileRouter.put('/api/profile/:id', jsonParser, (req, res, next) => {
     .then(profile => res.json(profile))
     .catch(next)
 })
+profileRouter.delete('/api/profile/:id', (req, res, next) => {
+  console.log('DELETE /api/profile/:id')
+
+  Profile.findByIdAndRemove(req.params.id)
+    .then(() => res.sendStatus(204))
+    .catch(next)
+})
