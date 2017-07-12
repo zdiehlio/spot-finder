@@ -1,4 +1,6 @@
-const faker = require('faker')
+'use strict'
+
+// const faker = require('faker')
 const moment = require('moment')
 const Event = require('../../model/event.js')
 const mockUser = require('./mock-user.js')

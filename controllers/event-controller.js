@@ -74,7 +74,7 @@ module.exports = {
     }
     if(patch.venue) {
       return Venue.findById(event.venue)
-        .catch(err => {
+        .catch(() => {
           throw new Error('no such venue')
         })
         .then(venue => isVenueBookable(venue, event))
