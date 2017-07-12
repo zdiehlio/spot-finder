@@ -36,7 +36,7 @@ module.exports = {
     event.start = moment(event.start)
     event.end = moment(event.end)
     if(!areTimesOkay(event.start, event.end))
-      throw new Error(`bad times: ${event.start.toString()} -- ${event.end.toString()}`)
+      return Promise.reject(new Error(`bad times: ${event.start.toString()} -- ${event.end.toString()}`))
       // TODO: make this better
     if(event.venue) { // attempting to book a venue
       return Venue.findById(event.venue)
@@ -70,14 +70,14 @@ module.exports = {
       patch.end = moment(patch.end)
     }
     if('start' in patch && 'end' in patch && !areTimesOkay(patch.start, patch.end)) {
-      throw new Error(`bad times: ${patch.start.toString()} -- ${patch.end.toString()}`)
+      return Promise.reject(new Error(`bad times: ${patch.start.toString()} -- ${patch.end.toString()}`))
     }
     if(patch.venue) {
-      return Venue.findById(event.venue)
+      return Venue.findById(patch.venue)
         .catch(() => {
           throw new Error('no such venue')
         })
-        .then(venue => isVenueBookable(venue, event))
+        .then(venue => isVenueBookable(venue, patch))
         .then(isBookable => {
           if(!isBookable) {
             throw new Error('venue is already booked')
