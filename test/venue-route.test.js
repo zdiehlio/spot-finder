@@ -25,7 +25,7 @@ describe('venue routes', () => {
 
   after(() => server.stop())
 
-  let testVenue
+  let testVenue, testVenueId
   it('should create a venue', () => {
     return Promise.resolve(mockVenue.createOneTestCase())
       .then(venue => testVenue = venue)
@@ -35,9 +35,61 @@ describe('venue routes', () => {
           .then(res => {
             expect(res.status).toEqual(201)
             expect(res.body.name).toEqual(testVenue.name)
-            console.log(res.body)
+            expect(res.body._id).toExist()
+            testVenueId = res.body._id
           })
       })
+  })
+
+  it('should reject and respond 400 to an invalid venue', () => {
+    return superagent.post(ENDPOINT)
+      .send({
+        big: 'no',
+        cheap: 'yes',
+      })
+      .catch(err => expect(err.status).toEqual(400))
+  })
+
+  it('should read a venue', () => {
+    return superagent.get(`${ENDPOINT}/${testVenueId}`)
+      .then(res => {
+        expect(res.status).toEqual(200)
+        expect(res.body.name).toEqual(testVenue.name)
+      })
+  })
+
+  it('should 404 a nonexistent venue', () => {
+    return superagent.get(`${ENDPOINT}/12345`)
+      .catch(err => expect(err.status).toEqual(404))
+  })
+
+  const updatedVenue = {
+    name: 'joes pizza',
+  }
+  it('should update a venue', () => {
+    return superagent.put(`${ENDPOINT}/${testVenueId}`)
+      .send(updatedVenue)
+      .then(res => {
+        expect(res.status).toEqual(200)
+        expect(res.body.name).toEqual(updatedVenue.name)
+        expect(res.body.address).toEqual(testVenue.address)
+      })
+  })
+
+  it('should 404 when updating a nonexistent venue', () => {
+    return superagent.put(`${ENDPOINT}/12345`)
+      .send(updatedVenue)
+      .catch(err => expect(err.status).toEqual(404))
+  })
+
+  it('should delete a venue', () => {
+    return superagent.delete(`${ENDPOINT}/${testVenueId}`)
+      .then(res => expect(res.status).toEqual(204))
+  })
+
+  it('should 404 when deleting a nonexistent venue', () => {
+    return superagent.delete(`${ENDPOINT}/123`)
+      .catch(err => expect(err.status).toEqual(404))
   })
 
 })
