@@ -24,11 +24,9 @@ mockEvent.createOne = (owner = null) => {
 
 mockEvent.createOneWithVenue = (owner = null, venueId) => {
   const event = mockEvent.createOneTestCase(owner)
-  console.log('creating mock event with venue')
-  console.dir(event)
-  console.log('******************************')
-  event.venueId = venueId
+  event.venue = venueId
   return new Event(event).save()
+
 }
 
 mockEvent.createMany = (number) => {

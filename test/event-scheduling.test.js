@@ -47,12 +47,12 @@ describe('event scheduling', () => {
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
-          start: events[0].start.add(1, 'minute'),
-          end: events[0].end.subtract(1, 'minute'),
+          start: events[0].start.clone().add(1, 'minute'),
+          end: events[0].end.clone().subtract(1, 'minute'),
         })
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
-      .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
+      .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
   it('should throw when booking an event that begins during an existing event', () => {
@@ -67,12 +67,12 @@ describe('event scheduling', () => {
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
-          start: events[0].start.add(10, 'minute'),
-          end: events[0].end.add(3, 'hour'),
+          start: events[0].start.clone().add(10, 'minute'),
+          end: events[0].end.clone().add(3, 'hour'),
         })
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
-      .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
+      .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
   it('should throw when booking an event that ends after an existing event begins', () => {
@@ -87,12 +87,12 @@ describe('event scheduling', () => {
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
-          start: events[0].start.subtract(1, 'hour'),
-          end: events[0].start.add(10, 'minute'),
+          start: events[0].start.clone().subtract(1, 'hour'),
+          end: events[0].start.clone().add(10, 'minute'),
         })
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
-      .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
+      .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
   it('should throw when booking an event that completely surrounds an existing event', () => {
@@ -107,12 +107,12 @@ describe('event scheduling', () => {
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
-          start: events[0].start.subtract(1, 'hour'),
-          end: events[0].end.add(1, 'hour'),
+          start: events[0].start.clone().subtract(1, 'hour'),
+          end: events[0].end.clone().add(1, 'hour'),
         })
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
-      .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
+      .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
   it('should throw when booking an event with precisely the same schedule as an existing event', () => {
@@ -127,12 +127,12 @@ describe('event scheduling', () => {
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
-          start: events[0].start,
-          end: events[0].end,
+          start: events[0].start.clone(),
+          end: events[0].end.clone(),
         })
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
-      .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
+      .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
 

@@ -28,10 +28,6 @@ const isVenueBookable = (venue, event) => {
         || doTimesOverlap(bookedEvent.end, event.start, event.end)
       ))
     })
-    .then(timesOverlap => {
-      if(timesOverlap)
-        throw new Error('event times overlap with booked times')
-    })
 }
 
 
@@ -42,8 +38,8 @@ module.exports = {
     if(!areTimesOkay(event.start, event.end))
       throw new Error(`bad times: ${event.start.toString()} -- ${event.end.toString()}`)
       // TODO: make this better
-    if(event.venueId) { // attempting to book a venue
-      return Venue.findById(event.venueId)
+    if(event.venue) { // attempting to book a venue
+      return Venue.findById(event.venue)
         .catch(err => {
           console.log(err)
           throw new Error('no such venue')
@@ -74,14 +70,11 @@ module.exports = {
       patch.end = moment(patch.end)
     }
     if('start' in patch && 'end' in patch && !areTimesOkay(patch.start, patch.end)) {
-      console.log('UPDATED EVENT GOT BAD TIMES: ')
-      console.dir(patch)
       throw new Error(`bad times: ${patch.start.toString()} -- ${patch.end.toString()}`)
     }
-    if(patch.venueId) {
-      return Venue.findById(event.venueId)
+    if(patch.venue) {
+      return Venue.findById(event.venue)
         .catch(err => {
-          console.log(err)
           throw new Error('no such venue')
         })
         .then(venue => isVenueBookable(venue, event))
