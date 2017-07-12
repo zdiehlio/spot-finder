@@ -43,14 +43,15 @@ describe('event scheduling', () => {
       .then(() => mockEvent.createOneWithVenue(null, venueId))
       .then(event => events.push(event))
       .then(() => {
-        return new Event({
+        return eventController.create({
           numberOfPeople: 17,
           owner: null,
           venue: venueId,
           start: events[0].start.add(1, 'minute'),
           end: events[0].end.subtract(1, 'minute'),
-        }).save()
+        })
       })
+      .then(() => expect(true).toBe(false)) // should be unreachable test
       .catch(err => expect(err.message).toEqual('event times overlap with booked times'))
   })
 
