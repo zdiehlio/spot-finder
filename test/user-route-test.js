@@ -19,7 +19,7 @@ describe('Testing user routes', () => {
   describe('testing Post route', () => {
     it('Should create a user and authenticate', () => {
       return superagent.post(`${ROOT_URL}/api/signup`)
-        .send({pass: '12345'})
+        .send({username: 'awesome', pass: '12345'})
         .then(res => {
           expect(res.status).toEqual(200)
           expect(res.text).toExist()
@@ -34,11 +34,12 @@ describe('Testing user routes', () => {
     })
   })
   describe('Testing GET request', () => {
-    it.only('Should return a status of 200', () => {
-      return mockUser.createOneWithPass()
+    it('Should return a status of 200', () => {
+      let testUser
+      return mockUser.createOne()
         .then(userData => {
-          console.log(userData)
-          let encoded = new Buffer(`${userData._id}:${userData.pass}`).toString('base64')
+          testUser = userData.user
+          let encoded = new Buffer(`${testUser.username}:${userData.pass}`).toString('base64')
           return superagent.get(`${ROOT_URL}/api/signin`)
             .set('Authorization', `Basic ${encoded}`)
         })

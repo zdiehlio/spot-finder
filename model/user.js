@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
+  username: {type: String, required: true},
   passHash: {type: String, required: true},
   tokenSeed: {type: String, required: true, unique: true},
 })
@@ -61,6 +62,6 @@ const User = module.exports = mongoose.model('authInfo', userSchema)
 User.create = function(data) {
   let pass = data.pass
   delete data.pass
-  return new User().createPassHash(pass)
+  return new User(data).createPassHash(pass)
     .then(user => user.createToken())
 }

@@ -13,9 +13,9 @@ describe('Testing User', () => {
   describe('Testing user constructor', () => {
     it('Should create user Auth and return 200 status', () => {
       return mockUser.createOne()
-        .then(testUser => {
-          expect(testUser.tokenSeed).toExist()
-          expect(testUser.passHash).toExist()
+        .then(res => {
+          expect(res.user.tokenSeed).toExist()
+          expect(res.user.passHash).toExist()
         })
     })
   })
