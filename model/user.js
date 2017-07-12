@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
+  username: {type: String, required: true},
   passHash: {type: String, required: true},
   tokenSeed: {type: String, required: true, unique: true},
 })
@@ -34,10 +35,12 @@ userSchema.methods.createTokenSeed = function() {
     let firstSeedCreate = () => {
       this.tokenSeed = crypto.randomBytes(32).toString('hex')
       this.save()
-        .then(() => resolve(this))
+        .then(() => {
+          resolve(this)
+        })
         .catch(() => {
           if(attempts < 1) {
-            return reject(new Error('Could not create token seed'))
+            return reject(new Error('booya Could not create token seed'))
           }
           attempts--
           firstSeedCreate()
@@ -54,7 +57,7 @@ userSchema.methods.createToken = function() {
     })
 }
 
-const User = module.exports = mongoose.model('user', userSchema)
+const User = module.exports = mongoose.model('authInfo', userSchema)
 
 User.create = function(data) {
   let pass = data.pass

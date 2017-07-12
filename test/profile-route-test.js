@@ -64,5 +64,34 @@ describe('start server', () => {
           })
       })
     })
+
+    describe('testing DELETE /api/profile/:id', () => {
+      afterEach(() => Profile.remove({}))
+      beforeEach(() => {
+        return new Profile({
+          username: 'helloworld',
+        })
+          .save()
+          .then(profile => {
+            tempProfile = profile
+          })
+      })
+
+      it('should delete a profile', () => {
+        console.log('tempProfile', tempProfile)
+        return superagent.delete(`${ROOT_URL}/api/profile/${tempProfile._id}`)
+          .then(res => {
+            expect(res.status).toEqual(204)
+          })
+      })
+
+      it('bad id should respond with a 404', () => {
+        console.log('tempProfile', tempProfile)
+        return superagent.delete(`${ROOT_URL}/api/profile/5965322b96a28124e0cb4a00`)
+          .catch(res => {
+            expect(res.status).toEqual(404)
+          })
+      })
+    })
   })
 })
