@@ -8,10 +8,10 @@ const mockEvent = {}
 
 
 mockEvent.createOneTestCase = (owner = null) => {
-  const startTime = moment(Date.now()).add(Math.floor(Math.random() * 100)+ 1)
+  const startTime = moment(Date.now()).add(Math.ceil(Math.random() * 100)+ 1)
   return {
     start: startTime,
-    end: startTime.add(Math.floor(Math.random() * 6 + 1), 'hours'),
+    end: startTime.clone().add(Math.ceil(Math.random() * 6 + 1), 'h'),
     numberOfPeople: Math.floor(Math.random() * 200 + 1),
     venue: null,
     owner: owner ? owner._id : null,
@@ -24,6 +24,9 @@ mockEvent.createOne = (owner = null) => {
 
 mockEvent.createOneWithVenue = (owner = null, venueId) => {
   const event = mockEvent.createOneTestCase(owner)
+  console.log('creating mock event with venue')
+  console.dir(event)
+  console.log('******************************')
   event.venueId = venueId
   return new Event(event).save()
 }
