@@ -96,7 +96,7 @@ module.exports = {
   index: (pageLength, pageNumber) => {
     return Event.find({})
       .sort({ start: 'asc' })
-      .skip(Number(pageNumber) > 0 ? pageNumber - 1 : 0)
+      .skip(pageLength * (Number(pageNumber) > 0 ? pageNumber - 1 : 0))
       .limit(pageLength)
   },
 
