@@ -1,6 +1,6 @@
 'use strict'
 
-// const faker = require('faker')
+const faker = require('faker')
 const moment = require('moment')
 const Event = require('../../model/event.js')
 const mockUser = require('./mock-user.js')
@@ -12,6 +12,7 @@ const mockEvent = {}
 mockEvent.createOneTestCase = (owner = null) => {
   const startTime = moment(Date.now()).add(Math.ceil(Math.random() * 100)+ 1)
   return {
+    name: faker.fake('{{commerce.color}}, {{company.bsAdjective}} {{company.bsBuzz}}'),
     start: startTime,
     end: startTime.clone().add(Math.ceil(Math.random() * 6 + 1), 'h'),
     numberOfPeople: Math.floor(Math.random() * 200 + 1),

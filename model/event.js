@@ -7,6 +7,7 @@ const Venue = require('./venue.js')
 const eventSchema = mongoose.Schema({
   _start: { type: Number, required: true },
   _end: { type: Number, required: true },
+  name: { type: String },
   numberOfPeople: { type: Number, required: true },
   venue: { type: mongoose.Schema.Types.ObjectId, default: null },
   owner: { type: mongoose.Schema.Types.ObjectId, required: false },
