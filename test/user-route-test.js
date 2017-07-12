@@ -7,7 +7,6 @@ const expect = require('expect')
 const superagent = require('superagent')
 
 const server = require('../lib/server.js')
-// const User = require('../model/user.js')
 const mockUser = require('./lib/mock-user.js')
 
 const ROOT_URL = `http://localhost:${process.env.PORT}`
@@ -38,7 +37,8 @@ describe('Testing user routes', () => {
       let testUser
       return mockUser.createOne()
         .then(userData => {
-          testUser = userData.user
+          testUser = userData
+          console.log(testUser)
           let encoded = new Buffer(`${testUser.username}:${userData.pass}`).toString('base64')
           return superagent.get(`${ROOT_URL}/api/signin`)
             .set('Authorization', `Basic ${encoded}`)
