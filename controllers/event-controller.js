@@ -83,9 +83,37 @@ module.exports = {
             throw new Error('venue is already booked')
           }
         })
-        .then(() => Event.findByIdAndUpdate(id, patch, { new: true }))
+        .then(() => {
+          return Event.findById(id)
+            .then(event => {
+              for(let key in event) {
+                event[key] = patch[key] || event[key]
+              }
+              return event.save()
+            })
+        })
+        // .then(() => new Promise((resolve, reject) => {
+        //   Event.findByIdAndUpdate(id, patch, { new: true }, (err, event) => {
+        //     if(err)
+        //       return reject(err)
+        //     return resolve(event)
+        //   })
     } else { // not trying to book a venue
-      return Event.findByIdAndUpdate(id, patch, { new: true })
+      return Event.findById(id)
+        .then(event => {
+          for(let key in event) {
+            event[key] = patch[key] || event[key]
+          }
+          return event.save()
+        })
+      //return Event.findOneAndUpdate({ _id: id}, patch, { new: true })
+      // return new Promise((resolve, reject) => {
+      //   Event.findByIdAndUpdate(id, patch, { new: true }, (err, event) => {
+      //     if(err)
+      //       return reject(err)
+      //     return resolve(event)
+      //   })
+      // })
     }
   },
 

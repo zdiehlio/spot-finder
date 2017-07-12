@@ -21,7 +21,6 @@ describe('event routes', () => {
         throw err
       })
       .then(() => Event.remove({}))
-      .then(() => mockEvent.createMany(2))
   })
 
   after(() => server.stop())

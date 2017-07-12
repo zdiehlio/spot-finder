@@ -111,6 +111,7 @@ describe('event controller', () => {
   })
 
   it('should update an event in the db\'s start time', () => {
+
     const newStartTime = testEvent.start.clone().add(1, 'hour')
     return eventController.update(testEventId,
       {
@@ -119,6 +120,14 @@ describe('event controller', () => {
       .then(event => {
         expect(event.start.isSame(newStartTime)).toBe(true)
       })
+      // .then(() => eventController.read(testEventId))
+      // .then(event => {
+      //   console.log('reading the updated event')
+      //   console.log('updated event start time: ')
+      //   console.log(event.start.toString())
+      //   console.log(newStartTime.toString())
+      //   expect(event.start.isSame(newStartTime)).toBe(true)
+      // })
   })
 
   it('should update an event in the db\'s end time', () => {
@@ -128,10 +137,6 @@ describe('event controller', () => {
         end: newEndTime,
       })
       .then(event => {
-        console.log('hihihih look here')
-        console.log(event.end)
-        console.log('//////////')
-        console.log(newEndTime)
         expect(event.end.isSame(newEndTime)).toBe(true)
       })
   })

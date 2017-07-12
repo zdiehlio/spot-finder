@@ -10,7 +10,7 @@ const API_URL = `http://localhost:${process.env.PORT}/api`
 const VENUE_PAGE_LENGTH = 20
 const EVENT_PAGE_LENGTH = 20
 
-describe('index routes', () => {
+describe('index routes & scheduling conflicts', () => {
 
   before(() => {
     return server.start()
@@ -81,6 +81,23 @@ describe('index routes', () => {
         expect(res.body.length).toEqual(EVENT_PAGE_LENGTH)
         return Event.find({}).sort({ start: 'asc' }).skip(40)
           .then(events => expect(res.body[0].name).toEqual(events[0].name))
+      })
+  })
+
+  // while we have a full database mocked, go ahead and test for proper handling of scheduling conflicts
+  it('should respond 409 when scheduling an overlapping event', () => {
+    return Event.find({})
+      .then(events => events[0])
+      .then(event => {
+        return superagent.post(`${API_URL}/events`)
+          .send({
+            name: 'coffee with yancy',
+            numberOfPeople: 3,
+            start: event.start,
+            end: event.end,
+            venue: event.venue,
+          })
+          .catch(err => expect(err.status).toBe(409))
       })
   })
 })
