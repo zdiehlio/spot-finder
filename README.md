@@ -30,3 +30,37 @@ Required Data:
   Provide username and password as JSON
 
 This route will require an authorization header that needs to include the username:password of the specific user to be authenticated. Signing in will return a brand new token.
+
+## Profile POST /api/profile
+
+Required Data:
+
+Provide username as JSON
+
+This route will create a new Profile with username, userID and option to add venueID and eventID.
+
+## Profile GET /api/profile
+
+Required Data:
+
+Provide userID
+
+This route is used to retrieve the profile using the userID.
+
+
+##Profile PUT /api/profile
+
+Required Data:
+
+Provide userID
+
+This route is used to retrieve a profile by using the userID and updated the profile.
+
+
+##Profile DELETE /api/profile
+
+Required Data:
+
+Profile userID
+
+This route is used to retrieve a profile by userID and delete the profile.
