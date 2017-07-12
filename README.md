@@ -64,3 +64,43 @@ Required Data:
 Profile userID
 
 This route is used to retrieve a profile by userID and delete the profile.
+
+## Event GET /api/events
+
+Required Data:
+
+Provide userID
+
+This route is used to query a page of events
+
+## Event POST /api/events
+
+Required Data:
+
+Provide userID
+
+This route is used to POST events.
+
+## Event GET /api/events
+
+Required Data:
+
+Provide userID
+
+This route is used to GET events.  
+
+## Event PUT /api/events
+
+Required Data:
+
+Provide userID
+
+This route is used to updates events.  
+
+## Event DELETE /api/events
+
+Required Data:
+
+Provide userID
+
+This route is used to delete events.
