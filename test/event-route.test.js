@@ -83,6 +83,11 @@ describe('event routes', () => {
       })
   })
 
+  it('should 404 when reading a nonexistent event', () => {
+    return superagent.get(`${ENDPOINT}/102938`)
+      .catch(err => expect(err.status).toEqual(404))
+  })
+
   const updatedEvent = {
     name: 'big shindig',
   }
@@ -95,9 +100,23 @@ describe('event routes', () => {
       })
   })
 
+  it('should 400 when updating an event with nonsensical times', () => {
+    return superagent.put(`${ENDPOINT}/${testEventId}`)
+      .send({
+        start: moment().add(8, 'hours'),
+        end: moment().add(2, 'hours'),
+      })
+      .catch(err => expect(err.status).toEqual(400))
+  })
+
   it('should delete an event', () => {
     return superagent.delete(`${ENDPOINT}/${testEventId}`)
       .then(res => expect(res.status).toEqual(204))
+  })
+
+  it('should 404 when deleting an invalid event', () => {
+    return superagent.delete(`${ENDPOINT}/928374923`)
+      .catch(err => expect(err.status).toEqual(404))
   })
 
 })
