@@ -16,6 +16,7 @@ const ROOT_URL = `http://localhost:${process.env.PORT}`
 
 describe('venue routes', () => {
   let testUserInfo
+  let otherUserInfo
 
   before(() => {
     return server.start()
@@ -31,6 +32,14 @@ describe('venue routes', () => {
           .set('Authorization', `Basic ${encoded}`)
       })
       .then(res => testUserInfo.returnedToken = res.text)
+      .then(() => mockUser.createOne())
+      .then(userInfo => otherUserInfo = userInfo)
+      .then(userInfo => {
+        let encoded = new Buffer(`${userInfo.user.username}:${userInfo.pass}`).toString('base64')
+        return superagent.get(`${ROOT_URL}/api/signin`)
+          .set('Authorization', `Basic ${encoded}`)
+      })
+      .then(res => otherUserInfo.returnedToken = res.text)
   })
 
   after(() => server.stop())
@@ -105,6 +114,13 @@ describe('venue routes', () => {
       .catch(err => expect(err.status).toEqual(401))
   })
 
+  it('should respond 403 when updating a venue with the wrong auth', () => {
+    return superagent.put(`${ENDPOINT}/${testVenueId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .send(updatedVenue)
+      .catch(err => expect(err.status).toEqual(403))
+  })
+
   it('should 404 when updating a nonexistent venue', () => {
     return superagent.put(`${ENDPOINT}/12345`)
       .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
@@ -115,6 +131,12 @@ describe('venue routes', () => {
   it('should 401 when deleting a venue without auth', () => {
     return superagent.delete(`${ENDPOINT}/${testVenueId}`)
       .catch(err => expect(err.status).toEqual(401))
+  })
+
+  it('should 403 when deleting a venue with the wrong auth', () => {
+    return superagent.delete(`${ENDPOINT}/${testVenueId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .catch(err => expect(err.status).toEqual(403))
   })
 
   it('should delete a venue', () => {
