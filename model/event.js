@@ -7,6 +7,7 @@ const Venue = require('./venue.js')
 const eventSchema = mongoose.Schema({
   _start: { type: Number, required: true },
   _end: { type: Number, required: true },
+  name: { type: String },
   numberOfPeople: { type: Number, required: true },
   venue: { type: mongoose.Schema.Types.ObjectId, default: null },
   owner: { type: mongoose.Schema.Types.ObjectId, required: false },
@@ -30,11 +31,6 @@ eventSchema.virtual('end').get(function() {
 })
 
 eventSchema.virtual('start').set(function(time) {
-  console.log('setting start time for event: ')
-  console.dir(this)
-  console.log('----------')
-  console.log(time)
-  console.log(time.valueOf())
   this._start = time.valueOf()
 })
 
@@ -43,9 +39,9 @@ eventSchema.virtual('end').set(function(time) {
 })
 
 eventSchema.pre('save', function(next) {
-  if(!this.venueId)
+  if(!this.venue)
     return next()
-  Venue.findById(this.venueId)
+  Venue.findById(this.venue)
     .then(venue => {
       if(!venue.events.includes(this._id))
         venue.events.push(this._id)
@@ -56,9 +52,9 @@ eventSchema.pre('save', function(next) {
 })
 
 eventSchema.post('remove', function(removedEvent, next) {
-  if(!removedEvent.venueId)
+  if(!removedEvent.venue)
     return next()
-  Venue.findById(removedEvent.venueId)
+  Venue.findById(removedEvent.venue)
     .catch(() => next())
     .then(venue => {
       venue.events = venue.events.filter(event => event._id !== removedEvent._id)
