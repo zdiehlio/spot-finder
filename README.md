@@ -19,7 +19,8 @@ This route will create a new user by providing a username, password in the body 
 {"username": "ChrisTech", "password": "myplaintextpassword"}
 
 A token will be returned that will only be used for the api/signin route.
-Example token:
+
+Example response (token):
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblNlZWQiOiJiOTAxY2YzZTAwNTE2Y2I0Mzg3Y2E3NGQwMGY5NWJjZjE4ZDQ0NzAyOTc4NmI2ZjVlYzE2ZWNiZmU3NmY2NmZmIiwiaWF0IjoxNDk5OTcwNzU4fQ.uATRkaPntQVETY-OaC2TgtLEbqxjGB4_zGebPsNqZPo
 ```
@@ -33,17 +34,37 @@ Required Data:
 
   Provide username and password as JSON
 
-This route will require an authorization header that needs to include the username:password of the specific user to be authenticated. Signing in will return a brand new token.
+This route will require an authorization header that needs to include the `username:password` of the specific user to be authenticated. Signing in will return a brand new token.
 
+Example response:
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblNlZWQiOiJkOWViZjM4ODRmODFkNjg4NWMxZTljNjhkYWYwOTI3NmYxMzhhODcxZjZkZmM3NzIyOTc3MTdmNmJkNjFlYzQ2IiwiaWF0IjoxNDk5OTcyODg2fQ.HlPWON2qo8jzjYqt5cGBpwDr-gCKQmRJh4TOPveErmM
+```
 
-
-## Event GET /api/events
+## Venue POST /api/venues
 
 Required Data:
 
 Provide userID
 
-This route is used to query a page of events
+This route is used to create a venue.
+
+Example Venue:
+
+```
+{ name: 'The Dawg Star Bar',
+ address: '89099 Lemke Locks',
+ capacity: 30,
+ amenities:
+  [ 'Bar Food',
+    'multiple outlet for computers',
+    'WIFI' ],
+ description: 'The Dawg Star Bar is a perfect bar for weddings and banquets.  It has full ABC permits and can offer many beverage alternatives for you and your guests. This space optionally adjoins with the main Dining Room and Library, providing easy access to the Terrace and Lawn. The Bar itself features a custom granite countertop that can also be used as a buffet or hors d’oeuvres serving station.  The bar seats up to 30 people.',
+ images: [],
+ price: 0,
+ owner: null,
+ events: [] }
+```
 
 ## Event POST /api/events
 
