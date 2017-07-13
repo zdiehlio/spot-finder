@@ -22,7 +22,7 @@ const isVenueBookable = (venue, event) => {
     return Promise.resolve(true)
   return Promise.all(venue.events.map((event) => Event.findById(event)))
     .then(events => {
-      return events.some(bookedEvent => !(
+      return !events.some(bookedEvent => (
         doTimesOverlap(event.start, bookedEvent.start, bookedEvent.end)
         || doTimesOverlap(event.end, bookedEvent.start, bookedEvent.end)
         || doTimesOverlap(bookedEvent.start, event.start, event.end)
@@ -44,7 +44,10 @@ module.exports = {
         .catch(() => {
           throw new Error('no such venue')
         })
-        .then(venue => isVenueBookable(venue, event))
+        .then(venue => {
+          console.log(venue)
+          return isVenueBookable(venue, event)
+        })
         .then(isBookable => {
           if(!isBookable) {
             throw new Error('venue is already booked')
