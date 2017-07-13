@@ -1,5 +1,6 @@
 'use strict'
 
+require('./lib/mock-aws.js')
 const dotenv = require('dotenv')
 dotenv.config({ path: `${__dirname}/../.test.env`})
 const superagent = require('superagent')
@@ -14,13 +15,11 @@ const ENDPOINT = `http://localhost:${process.env.PORT}/api/venues`
 const ROOT_URL = `http://localhost:${process.env.PORT}`
 
 describe('venue routes', () => {
-
   let testUserInfo
 
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Venue.remove({}))
@@ -39,11 +38,15 @@ describe('venue routes', () => {
   let testVenue, testVenueId
   it('should create a venue', () => {
     return Promise.resolve(mockVenue.createOneTestCase())
-      .then(venue => testVenue = venue)
       .then(venue => {
+        testVenue = venue
         return superagent.post(ENDPOINT)
           .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
-          .send(venue)
+          .field('name', venue.name)
+          .field('address', venue.address)
+          .field('capacity', venue.capacity)
+          .attach('image', `${__dirname}/assets/venue.jpg`)
+          // .send(venue)
           .then(res => {
             expect(res.status).toEqual(201)
             expect(res.body.name).toEqual(testVenue.name)
@@ -88,7 +91,7 @@ describe('venue routes', () => {
   it('should update a venue', () => {
     return superagent.put(`${ENDPOINT}/${testVenueId}`)
       .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
-      .send(updatedVenue)
+      .field('name', 'joes pizza')
       .then(res => {
         expect(res.status).toEqual(200)
         expect(res.body.name).toEqual(updatedVenue.name)

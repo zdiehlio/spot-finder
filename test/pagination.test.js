@@ -1,3 +1,5 @@
+require('./lib/mock-aws.js')
+
 const expect = require('expect')
 const superagent = require('superagent')
 
@@ -18,7 +20,6 @@ describe('index routes & scheduling conflicts', () => {
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Event.remove({}))

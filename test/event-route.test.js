@@ -1,5 +1,7 @@
 'use strict'
 
+require('./lib/mock-aws.js')
+
 const dotenv = require('dotenv')
 dotenv.config({ path: `${__dirname}/../.test.env`})
 const superagent = require('superagent')
@@ -21,7 +23,6 @@ describe('event routes', () => {
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Event.remove({}))

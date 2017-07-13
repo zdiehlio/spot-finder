@@ -120,14 +120,6 @@ describe('event controller', () => {
       .then(event => {
         expect(event.start.isSame(newStartTime)).toBe(true)
       })
-      // .then(() => eventController.read(testEventId))
-      // .then(event => {
-      //   console.log('reading the updated event')
-      //   console.log('updated event start time: ')
-      //   console.log(event.start.toString())
-      //   console.log(newStartTime.toString())
-      //   expect(event.start.isSame(newStartTime)).toBe(true)
-      // })
   })
 
   it('should update an event in the db\'s end time', () => {
