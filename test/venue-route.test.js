@@ -20,7 +20,6 @@ describe('venue routes', () => {
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Venue.remove({}))

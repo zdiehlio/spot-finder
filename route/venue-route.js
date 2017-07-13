@@ -18,7 +18,6 @@ router.get('/api/venues', (req, res, next) => {
 
 // create
 router.post('/api/venues', bearAuth, s3Upload('image'), (req, res, next) => {
-  console.log('Hola')
   // req.body.owner = req.user._id
   const venue = Object.assign({}, req.body, {
     owner: req.user._id,
@@ -44,9 +43,6 @@ router.put('/api/venues/:id', bearAuth, s3Upload('image'), (req, res, next) => {
     .then(venue => {
       if(!(venue.owner.equals(req.user._id)))
         throw new Error('forbidden')
-      console.log(req.body)
-      console.log(typeof req.body)
-      console.log(venue)
       const newVenue = Object.assign({}, req.body, {
         owner: req.user._id,
       })
@@ -57,7 +53,6 @@ router.put('/api/venues/:id', bearAuth, s3Upload('image'), (req, res, next) => {
     })
     .then(venue => res.status(200).json(venue))
     .catch(err => {
-      console.log(err)
       next(err)
     })
 })

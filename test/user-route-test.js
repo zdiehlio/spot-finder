@@ -40,7 +40,6 @@ describe('Testing user routes', () => {
       return mockUser.createOne()
         .then(userData => {
           testUser = userData
-          console.log(testUser)
           let encoded = new Buffer(`${testUser.user.username}:${userData.pass}`).toString('base64')
           return superagent.get(`${ROOT_URL}/api/signin`)
             .set('Authorization', `Basic ${encoded}`)

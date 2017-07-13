@@ -20,7 +20,6 @@ describe('index routes & scheduling conflicts', () => {
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Event.remove({}))

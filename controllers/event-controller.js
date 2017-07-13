@@ -41,8 +41,7 @@ module.exports = {
       // TODO: make this better
     if(event.venue) { // attempting to book a venue
       return Venue.findById(event.venue)
-        .catch(err => {
-          console.log(err)
+        .catch(() => {
           throw new Error('no such venue')
         })
         .then(venue => isVenueBookable(venue, event))
