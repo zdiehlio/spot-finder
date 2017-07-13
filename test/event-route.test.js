@@ -10,11 +10,15 @@ const moment = require('moment')
 
 const server = require('../lib/server.js')
 const mockEvent = require('./lib/mock-event.js')
+const mockUser = require('./lib/mock-user.js')
 const Event = require('../model/event.js')
 
 const ENDPOINT = `http://localhost:${process.env.PORT}/api/events`
+const ROOT_URL = `http://localhost:${process.env.PORT}`
 
 describe('event routes', () => {
+
+  let testUserInfo
 
   before(() => {
     return server.start()
@@ -23,6 +27,14 @@ describe('event routes', () => {
         throw err
       })
       .then(() => Event.remove({}))
+      .then(() => mockUser.createOne())
+      .then(userInfo => testUserInfo = userInfo)
+      .then(userInfo => {
+        let encoded = new Buffer(`${userInfo.user.username}:${userInfo.pass}`).toString('base64')
+        return superagent.get(`${ROOT_URL}/api/signin`)
+          .set('Authorization', `Basic ${encoded}`)
+      })
+      .then(res => testUserInfo.returnedToken = res.text)
   })
 
   after(() => server.stop())
@@ -34,6 +46,7 @@ describe('event routes', () => {
       .then(event => testEvent = event)
       .then(event => {
         return superagent.post(ENDPOINT)
+          .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
           .send(event)
           .then(res => {
             expect(res.status).toEqual(201)
@@ -46,6 +59,7 @@ describe('event routes', () => {
 
   it('should reject and respond 400 to invalid event', () => {
     return superagent.post(ENDPOINT)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .send({
         fun: 'yes',
         freeBeer: 'no',
@@ -55,6 +69,7 @@ describe('event routes', () => {
 
   it('should reject and respond 400 to an event with nonsense times', () => {
     return superagent.post(ENDPOINT)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .send({
         name: 'bad times',
         numberOfPeople: 2,
@@ -66,6 +81,7 @@ describe('event routes', () => {
 
   it('should reject and respond 400 to an event assigned to a nonexistent venue', () => {
     return superagent.post(ENDPOINT)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .send({
         name: 'party',
         numberOfPeople: 1,
@@ -94,6 +110,7 @@ describe('event routes', () => {
   }
   it('should update an event', () => {
     return superagent.put(`${ENDPOINT}/${testEventId}`)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .send(updatedEvent)
       .then(res => {
         expect(res.status).toEqual(200)
@@ -103,6 +120,7 @@ describe('event routes', () => {
 
   it('should 400 when updating an event with nonsensical times', () => {
     return superagent.put(`${ENDPOINT}/${testEventId}`)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .send({
         start: moment().add(8, 'hours'),
         end: moment().add(2, 'hours'),
@@ -112,11 +130,13 @@ describe('event routes', () => {
 
   it('should delete an event', () => {
     return superagent.delete(`${ENDPOINT}/${testEventId}`)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .then(res => expect(res.status).toEqual(204))
   })
 
   it('should 404 when deleting an invalid event', () => {
     return superagent.delete(`${ENDPOINT}/928374923`)
+      .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
       .catch(err => expect(err.status).toEqual(404))
   })
 
