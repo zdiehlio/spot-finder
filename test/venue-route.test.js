@@ -92,7 +92,7 @@ describe('venue routes', () => {
   it('should update a venue', () => {
     return superagent.put(`${ENDPOINT}/${testVenueId}`)
       .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
-      .send(updatedVenue)
+      .field('name', 'joes pizza')
       .then(res => {
         expect(res.status).toEqual(200)
         expect(res.body.name).toEqual(updatedVenue.name)

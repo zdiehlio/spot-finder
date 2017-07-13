@@ -19,18 +19,14 @@ router.get('/api/venues', (req, res, next) => {
 // create
 router.post('/api/venues', bearAuth, s3Upload('image'), (req, res, next) => {
   console.log('Hola')
-  req.body.owner = req.user._id
-  venueController.create({
-    name: req.body.name,
-    address: req.body.address,
-    capacity: req.body.capacity,
-    amenities: req.body.amenities,
-    description: req.body.description,
-    image: req.s3Data.Location,
-    price: req.body.price,
+  // req.body.owner = req.user._id
+  const venue = Object.assign({}, req.body, {
     owner: req.user._id,
-    events: req.body.events,
+    events: [],
   })
+  if(req.s3Data && req.s3Data.Location)
+    venue.image = req.s3Data.Location
+  venueController.create(venue)
     .then(venue => res.status(201).json(venue))
     .catch(err => next(err))
 })
@@ -48,17 +44,16 @@ router.put('/api/venues/:id', bearAuth, s3Upload('image'), (req, res, next) => {
     .then(venue => {
       if(!(venue.owner.equals(req.user._id)))
         throw new Error('forbidden')
-      return venueController.update(req.params.id, {
-        name: req.body.name,
-        address: req.body.address,
-        capacity: req.body.capacity,
-        amenities: req.body.amenities,
-        description: req.body.description,
-        image: req.s3Data.Location,
-        price: req.body.price,
-        owner: req.user._id.toString(),
-        events: req.events._id.toString(),
+      console.log(req.body)
+      console.log(typeof req.body)
+      console.log(venue)
+      const newVenue = Object.assign({}, req.body, {
+        owner: req.user._id,
       })
+      // req.body.hasOwnProperty('price')
+      if(req.s3Data && req.s3Data.Location)
+        newVenue.image = req.s3Data.Location
+      return venueController.update(req.params.id, newVenue)
     })
     .then(venue => res.status(200).json(venue))
     .catch(err => {
