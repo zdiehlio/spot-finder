@@ -52,13 +52,12 @@ eventSchema.pre('save', function(next) {
 })
 
 eventSchema.post('remove', function(removedEvent, next) {
-  if(!removedEvent.venue)
-    return next()
+  // if(!removedEvent.venue)
+  //   return next()
   Venue.findById(removedEvent.venue)
-    .catch(() => next())
     .then(venue => {
       venue.events = venue.events.filter(event => event._id !== removedEvent._id)
-      return venue.save()
+      return venue && venue.save()
     })
     .then(() => next())
     .catch(err => next(err))

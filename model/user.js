@@ -25,7 +25,7 @@ userSchema.methods.passHashCompare = function(pass) {
       if(match) {
         return this
       }
-      throw new Error('Password does not match!')
+      throw new Error('no authorization provided : Password does not match!')
     })
 }
 
@@ -38,13 +38,19 @@ userSchema.methods.createTokenSeed = function() {
         .then(() => {
           resolve(this)
         })
-        .catch(() => {
-          if(attempts < 1) {
-            return reject(new Error('booya Could not create token seed'))
-          }
-          attempts--
-          firstSeedCreate()
-        })
+        .catch(
+          /* this code would only run if our 32 random bytes match another 32 random bytes in the db */
+          /* this is incredibly unlikely unless we run tests with millions/billions of users,
+             and we cannot force this condition to happen,
+             so we ignore it for code coverage purposes. */
+          /* istanbul ignore next */
+          () => {
+            if(attempts < 1) {
+              return reject(new Error('booya Could not create token seed'))
+            }
+            attempts--
+            firstSeedCreate()
+          })
     }
     firstSeedCreate()
   })

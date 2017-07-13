@@ -18,7 +18,7 @@ const ROOT_URL = `http://localhost:${process.env.PORT}`
 
 describe('event routes', () => {
 
-  let testUserInfo
+  let testUserInfo, otherUserInfo
 
   before(() => {
     return server.start()
@@ -34,6 +34,14 @@ describe('event routes', () => {
           .set('Authorization', `Basic ${encoded}`)
       })
       .then(res => testUserInfo.returnedToken = res.text)
+      .then(() => mockUser.createOne())
+      .then(userInfo => otherUserInfo = userInfo)
+      .then(userInfo => {
+        let encoded = new Buffer(`${userInfo.user.username}:${userInfo.pass}`).toString('base64')
+        return superagent.get(`${ROOT_URL}/api/signin`)
+          .set('Authorization', `Basic ${encoded}`)
+      })
+      .then(res => otherUserInfo.returnedToken = res.text)
   })
 
   after(() => server.stop())
@@ -91,6 +99,16 @@ describe('event routes', () => {
       .catch(err => expect(err.status).toEqual(400))
   })
 
+  it('should reject and respond 401 to a post with malformed auth headers', () => {
+    return Promise.resolve(mockEvent.createOneTestCase())
+      .then(event => {
+        return superagent.post(ENDPOINT)
+          .set('Authorization', `Bearer `)
+          .send(event)
+          .catch(err => expect(err.status).toEqual(401))
+      })
+  })
+
   it('should read an event', () => {
     return superagent.get(`${ENDPOINT}/${testEventId}`)
       .then(res => {
@@ -125,6 +143,30 @@ describe('event routes', () => {
         end: moment().add(2, 'hours'),
       })
       .catch(err => expect(err.status).toEqual(400))
+  })
+
+  it('should respond 401 when updating an event with no auth', () => {
+    return superagent.put(`${ENDPOINT}/${testEventId}`)
+      .send(updatedEvent)
+      .catch(err => expect(err.status).toEqual(401))
+  })
+
+  it('should respond 403 when updating an event with the wrong auth', () => {
+    return superagent.put(`${ENDPOINT}/${testEventId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .send(updatedEvent)
+      .catch(err => expect(err.status).toEqual(403))
+  })
+
+  it('should respond 401 when deleting event with no auth', () => {
+    return superagent.delete(`${ENDPOINT}/${testEventId}`)
+      .catch(err => expect(err.status).toEqual(401))
+  })
+
+  it('should respond 403 when deleting event with the wrong auth', () => {
+    return superagent.delete(`${ENDPOINT}/${testEventId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .catch(err => expect(err.status).toEqual(403))
   })
 
   it('should delete an event', () => {
