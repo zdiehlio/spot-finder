@@ -137,5 +137,22 @@ describe('event scheduling', () => {
       .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
+  it('should schedule an event ok when using update', () => {
+    let venueId, eventId
+    return mockVenue.createOne()
+      .then(venue => {
+        console.log(venue)
+        return venue
+      })
+      .then(venue => venueId = venue._id)
+      .then(() => mockEvent.createOne())
+      .then(event => eventId = event._id)
+      .then(() => {
+        return eventController.update(eventId, { venue: venueId })
+      })
+      .then(() => Venue.findById(venueId))
+      .then(venue => expect(venue.events.some(id => id.equals(eventId))).toBe(true))
+  })
+
 
 })

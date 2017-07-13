@@ -14,14 +14,15 @@ const areTimesOkay = (start, end) => {
   return true
 }
 
-const doTimesOverlap = (testTime, start, end) => {
-  return testTime.isBetween(start, end, null, '[]')
-}
+const doTimesOverlap = (testTime, start, end) => (
+  testTime.isBetween(start, end, null, '[]'))
 
 const isVenueBookable = (venue, event) => {
+  if(venue.events.length < 1)
+    return Promise.resolve(true)
   return Promise.all(venue.events.map((event) => Event.findById(event)))
     .then(events => {
-      return events.some(bookedEvent => (
+      return events.some(bookedEvent => !(
         doTimesOverlap(event.start, bookedEvent.start, bookedEvent.end)
         || doTimesOverlap(event.end, bookedEvent.start, bookedEvent.end)
         || doTimesOverlap(bookedEvent.start, event.start, event.end)
@@ -118,7 +119,7 @@ module.exports = {
   },
 
   destroy: (id) => {
-    return Event.findByIdAndRemove(id)
+    return Event.findById(id).remove()
   },
 
   index: (pageLength, pageNumber) => {

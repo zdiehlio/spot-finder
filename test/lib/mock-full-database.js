@@ -22,7 +22,7 @@ const createManyEventsWithVenue = (venue, tries) =>
 
 module.exports = () => {
   return mockVenue.createMany(50)
-    .then(venues => Promise.all(venues.map(venue => createManyEventsWithVenue(venue._id, 6))))
+    .then(venues => Promise.all(venues.map(venue => createManyEventsWithVenue(venue._id, 3))))
     .then(() => {
       return new Promise((resolve, reject) => {
         Venue.count({}, (err, venueCount) => {
