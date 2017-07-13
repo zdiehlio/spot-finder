@@ -33,7 +33,6 @@ describe('venue routes', () => {
           .set('Authorization', `Basic ${encoded}`)
       })
       .then(res => testUserInfo.returnedToken = res.text)
-      //
       .then(() => mockUser.createOne())
       .then(userInfo => otherUserInfo = userInfo)
       .then(userInfo => {

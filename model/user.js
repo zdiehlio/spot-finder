@@ -25,7 +25,7 @@ userSchema.methods.passHashCompare = function(pass) {
       if(match) {
         return this
       }
-      throw new Error('Password does not match!')
+      throw new Error('no authorization provided : Password does not match!')
     })
 }
 

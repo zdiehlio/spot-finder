@@ -98,6 +98,16 @@ describe('event routes', () => {
       .catch(err => expect(err.status).toEqual(400))
   })
 
+  it('should reject and respond 401 to a post with malformed auth headers', () => {
+    return Promise.resolve(mockEvent.createOneTestCase())
+      .then(event => {
+        return superagent.post(ENDPOINT)
+          .set('Authorization', `Bearer `)
+          .send(event)
+          .catch(err => expect(err.status).toEqual(401))
+      })
+  })
+
   it('should read an event', () => {
     return superagent.get(`${ENDPOINT}/${testEventId}`)
       .then(res => {

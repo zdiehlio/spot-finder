@@ -48,6 +48,31 @@ describe('Testing user routes', () => {
           expect(res.text).toExist()
         })
     })
+    it('should respond 401 when trying to log in with empty basic auth', () => {
+      return superagent.get(`${ROOT_URL}/api/signin`)
+        .set('Authorization', `Basic `)
+        .catch(err => expect(err.status).toEqual(401))
+    })
+    it('should respond 401 with an empty password', () => {
+      return mockUser.createOne()
+        .then(userData => {
+          let encoded = new Buffer(`${userData.user.username}:`).toString('base64')
+          return superagent.get(`${ROOT_URL}/api/signin`)
+            .set('Authorization', `Basic ${encoded}`)
+        })
+        .catch(err => expect(err.status).toEqual(401))
+    })
+
+    it('should respond 401 with an incorrect password', () => {
+      return mockUser.createOne()
+        .then(userData => {
+          let encoded = new Buffer(`${userData.user.username}:hunter2`).toString('base64')
+          return superagent.get(`${ROOT_URL}/api/signin`)
+            .set('Authorization', `Basic ${encoded}`)
+        })
+        .catch(err => expect(err.status).toEqual(401))
+    })
+
     it('Should return a status of 401', () => {
       return superagent.get(`${ROOT_URL}/api/signin`)
         .catch(res => {

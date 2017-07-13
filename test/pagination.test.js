@@ -105,8 +105,8 @@ describe('index routes & scheduling conflicts', () => {
           .send({
             name: 'coffee with yancy',
             numberOfPeople: 3,
-            start: event.start,
-            end: event.end,
+            start: event.start.clone().add(1, 'minute'),
+            end: event.end.clone().subtract(1, 'minute'),
             venue: event.venue,
           })
           .catch(err => expect(err.status).toBe(409))
