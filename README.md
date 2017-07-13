@@ -99,6 +99,49 @@ Example Venue:
  owner: null,
  events: [] }
 ```
+## PUT /api/venues/:id
+Venue Data:
+
+* Required in the body of request:
+  * name: 'example name'
+  * address: 'example address'
+  * capacity: 'example capacity'
+
+* Authorization Header
+  * `Bearer <response token from signin>`
+
+Required in the query:
+
+Specific venue id which is provided when you complete a post request to `api/venues`
+
+This route will allow you to update the venue.
+
+Example response:
+
+```
+{ name: 'Gibson - Dickens',
+ address: '89099 Lemke Locks',
+ capacity: 21,
+ amenities:
+  [ 'mission-critical productize mindshare',
+    'end-to-end iterate e-commerce',
+    'viral orchestrate web services' ],
+ description: 'Eum ut eos quos possimus qui perspiciatis.',
+ images: [],
+ price: 0,
+ owner: null,
+ events: [] }
+
+```
+## Venue DELETE /api/venues/:id
+
+Required in the query:
+
+Specific event id which is provided when you complete a post request to `api/venues`
+
+This route will allow you to delete specific venue by their id.
+
+Example response: You will only receive a status code 204 when a successful deletion occurs.
 
 ## Event GET /api/events
 
@@ -141,16 +184,48 @@ Example event:
 
 ## Event PUT /api/events
 
-Required Data:
+Event data:
 
-Provide userID
+* Required in the body of request:
+  * name: 'example name'
+  * start: 'example moment'
+  * end: 'example moment'
+  * numberOfPeople: 'example numberOfPeople'
+
+* Authorization:
+  *  `Bearer <response token from signin>`
+
+Required in the query:
+
+Specific event id which is provided when you complete a post request to `api/events`
 
 This route is used to updates events.  
 
-## Event DELETE /api/events
+Example event:
+```
+{ name: 'ivory, B2B repurpose',
+  start: moment("2017-07-23T10:40:04.016"),
+  end: moment("2017-07-23T18:40:04.016"),
+  numberOfPeople: 15,
+  venue: null,
+  owner: null }
+```
 
-Required Data:
+## Event DELETE /api/events/:id
 
-Provide userID
+Required in the query:
 
-This route is used to delete events.
+Specific event id which is provided when you complete a post request to `api/events`
+
+This route will allow you to delete specific event by their id.
+
+Example response: You will only receive a status code 204 when a successful deletion occurs.
+
+***
+# Testing
+
+## Testing Framework mocha test runner
+eslint
+
+## Travis
+Continuous Integration travis-ci is integrated into this project through the use of the included .travis.yml file. All pull requests initiated in git will launch travis, which in turn runs the included mocha tests and the eslint tests. Pull requests are not merged until all travis-ci tests pass.
