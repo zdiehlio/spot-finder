@@ -11,7 +11,7 @@ const Venue = require('../model/venue.js')
 const mockEvent = require('./lib/mock-event.js')
 const mockVenue = require('./lib/mock-venue.js')
 
-describe.only('event scheduling', () => {
+describe('event scheduling', () => {
   before(() => {
     dotenv.config({ path: `${__dirname}/../.test.env`})
     mongoose.Promise = Promise
@@ -137,7 +137,7 @@ describe.only('event scheduling', () => {
       .catch(err => expect(err.message).toEqual('venue is already booked'))
   })
 
-  it.only('should schedule an event ok when using update', () => {
+  it('should schedule an event ok when using update', () => {
     let venueId, eventId
     return mockVenue.createOne()
       .then(venue => {
@@ -164,9 +164,12 @@ describe.only('event scheduling', () => {
         // seems venue.events[0] is an object while eventId is a number
         console.log('venue#events[0]', venue.events[0])
         console.log('eventid        ', eventId)
+        console.log('they are equal: ', venue.events[0].equals(eventId))
+        console.log('typeof venue#events[0]: ', typeof venue.events[0])
+        console.log('typeof eventid: ', typeof eventId)
         return venue
       })
-      .then(venue => expect(venue.events.includes(eventId)).toBe(true))
+      .then(venue => expect(venue.events.some(id => id.equals(eventId))).toBe(true))
   })
 
 
