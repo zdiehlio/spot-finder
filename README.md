@@ -5,7 +5,7 @@ This RESTful API was created to help people find and post venue for meetup or ev
 
 This RESTful API provides the necessary back-end infrastructure and functionality to create, read, update and delete data related to match user with venues. This API provides a means for user to connect to available venues.
 
-==================
+****
 ## Routes
 
 ## User POST /api/signup
@@ -19,6 +19,10 @@ This route will create a new user by providing a username, password in the body 
 {"username": "ChrisTech", "password": "myplaintextpassword"}
 
 A token will be returned that will only be used for the api/signin route.
+Example token:
+```
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblNlZWQiOiJiOTAxY2YzZTAwNTE2Y2I0Mzg3Y2E3NGQwMGY5NWJjZjE4ZDQ0NzAyOTc4NmI2ZjVlYzE2ZWNiZmU3NmY2NmZmIiwiaWF0IjoxNDk5OTcwNzU4fQ.uATRkaPntQVETY-OaC2TgtLEbqxjGB4_zGebPsNqZPo
+```
 
 
 ## User GET /api/signin
@@ -31,39 +35,7 @@ Required Data:
 
 This route will require an authorization header that needs to include the username:password of the specific user to be authenticated. Signing in will return a brand new token.
 
-## Profile POST /api/profile
 
-Required Data:
-
-Provide username as JSON
-
-This route will create a new Profile with username, userID and option to add venueID and eventID.
-
-## Profile GET /api/profile
-
-Required Data:
-
-Provide userID
-
-This route is used to retrieve the profile using the userID.
-
-
-## Profile PUT /api/profile
-
-Required Data:
-
-Provide userID
-
-This route is used to retrieve a profile by using the userID and updated the profile.
-
-
-## Profile DELETE /api/profile
-
-Required Data:
-
-Profile userID
-
-This route is used to retrieve a profile by userID and delete the profile.
 
 ## Event GET /api/events
 
