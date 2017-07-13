@@ -65,6 +65,19 @@ Example Venue:
 
 ## Venue POST /api/venues
 
+Venue Data:
+
+* Required in the body of request:
+  * name: 'example name'
+  * address: 'example address'
+  * capacity: 'example capacity'
+
+* Optional data:
+  * amenities: 'example amenities'
+  * description: 'example description'
+  * images: 'example images'
+  * price: 'example price',
+
 * Authorization Header
   * `Bearer <response token from signin>`
 
@@ -89,29 +102,30 @@ Example Venue:
 
 ## Event GET /api/events
 
+This route will return one page  with a list of 20 venue if no query is provide it will return a page of venues in alphabetical order by default.
 
-This route is used to GET events.  
+Example Event:
 
+```
 { name: 'cyan, mission-critical scale',
   start: moment("2017-07-16T04:39:13.204"),
   end: moment("2017-07-17T00:39:13.204"),
   numberOfPeople: 181,
   venue: null,
   owner: null }
-
+```
 ## Event POST /api/events
-Required data:
 
-Required in the body of request:
+Event data:
 
-* name: 'example location'
-* start: 'example moment'
-* end: 'example moment'
-* numberOfPeople: 'example numberOfPeople'
+* Required in the body of request:
+  * name: 'example name'
+  * start: 'example moment'
+  * end: 'example moment'
+  * numberOfPeople: 'example numberOfPeople'
 
 * Authorization:
-
-* needs to be done in the following way: `Bearer <response token from signin>`
+  *  `Bearer <response token from signin>`
 
 This route will create a new event that will include the name of the event and date. userId is required and is used to tie the user to the new event.
 
