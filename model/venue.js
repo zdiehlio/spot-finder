@@ -10,7 +10,7 @@ const venueSchema = mongoose.Schema({
   description: {type: String},
   images: [{type: String}],
   price: {type: Number},
-  owner: {type: mongoose.Schema.Types.ObjectId, required: false}, // TODO: make required when appropriate
+  owner: {type: mongoose.Schema.Types.ObjectId, required: true}, // TODO: make required when appropriate
   events: [{type: mongoose.Schema.Types.ObjectId, default: null}],
 })
 

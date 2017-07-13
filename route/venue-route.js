@@ -4,6 +4,9 @@ const jsonParser = require('body-parser').json()
 
 const Router = require('express').Router
 const router = new Router()
+const s3Upload = require('../lib/s3-middleware.js')
+const bearAuth = require('../lib/bear-auth-middleware.js')
+const Venue = require('../model/venue.js')
 const venueController = require('../controllers/venue-controller.js')
 
 
@@ -17,8 +20,20 @@ router.get('/api/venues', (req, res, next) => {
 })
 
 // create
-router.post('/api/venues', jsonParser, (req, res, next) => {
-  venueController.create(req.body)
+router.post('/api/venues', bearAuth, s3Upload('image'), (req, res, next) => {
+  console.log(req.body)
+  new Venue({
+    name: req.body.name,
+    address: req.body.address,
+    capacity: req.body.capacity,
+    amenities: req.body.amenities,
+    description: req.body.description,
+    images: req.s3Data.Location,
+    price: req.body.price,
+    owner: req.user._id.toString(),
+    events: req.events._id.toString(),
+  })
+    .save()
     .then(venue => res.status(201).json(venue))
     .catch(err => next(err))
 })

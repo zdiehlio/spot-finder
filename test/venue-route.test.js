@@ -8,6 +8,7 @@ const expect = require('expect')
 const server = require('../lib/server.js')
 const mockVenue = require('./lib/mock-venue.js')
 const Venue = require('../model/venue.js')
+const mockUser = require('./lib/mock-user.js')
 
 const ENDPOINT = `http://localhost:${process.env.PORT}/api/venues`
 
@@ -26,14 +27,23 @@ describe('venue routes', () => {
   after(() => server.stop())
 
   let testVenue, testVenueId
-  it('should create a venue', () => {
+  it.only('should create a venue', () => {
     return Promise.resolve(mockVenue.createOneTestCase())
-      .then(venue => testVenue = venue)
       .then(venue => {
+        testVenue = venue
+        console.log(testVenue)
         return superagent.post(ENDPOINT)
-          .send(venue)
+          .set('Authorization', `Bearer ${testVenue.token}`)
+          .field('name', 'testplace')
+          .field('address', '11112 test')
+          .field('capacity', 50)
+          .field('owner', `${testVenue.owner._id}`)
+          .attach('image', `${__dirname}/assets/venue.jpg`)
           .then(res => {
             expect(res.status).toEqual(201)
+            expect(res.body.name).toEqual('testplace')
+            expect(res.body.address).toEqual('11112 test')
+            expect(res.body.capacity).toEqual(50)
             expect(res.body.name).toEqual(testVenue.name)
             expect(res.body._id).toExist()
             testVenueId = res.body._id
