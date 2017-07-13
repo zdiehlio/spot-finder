@@ -1,3 +1,5 @@
+require('./lib/mock-aws.js')
+
 const expect = require('expect')
 const superagent = require('superagent')
 
@@ -98,6 +100,22 @@ describe('index routes & scheduling conflicts', () => {
             venue: event.venue,
           })
           .catch(err => expect(err.status).toBe(409))
+      })
+  })
+
+  // we will also take the opportunity to test event post hook
+  it('should remove an event from its venue when event is removed', () => {
+    let venueId, eventId
+    return Event.findOne({})
+      .then(event => {
+        venueId = event.venue
+        eventId = event._id
+        return event
+      })
+      .then(event => event.remove())
+      .then(() => Venue.findById(venueId))
+      .then(venue => {
+        expect(venue.events.includes(eventId)).toBe(false)
       })
   })
 })

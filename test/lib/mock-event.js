@@ -14,7 +14,7 @@ mockEvent.createOneTestCase = (owner = null) => {
   return {
     name: faker.fake('{{commerce.color}}, {{company.bsAdjective}} {{company.bsBuzz}}'),
     start: startTime,
-    end: startTime.clone().add(Math.ceil(Math.random() * 480 + 1), 'h'),
+    end: startTime.clone().add(Math.ceil(Math.random() * 24 + 1), 'h'),
     numberOfPeople: Math.floor(Math.random() * 200 + 1),
     venue: null,
     owner: owner ? owner._id : null,

@@ -1,12 +1,9 @@
 'use strict'
 
-const jsonParser = require('body-parser').json()
-
 const Router = require('express').Router
 const router = new Router()
 const s3Upload = require('../lib/s3-middleware.js')
 const bearAuth = require('../lib/bear-auth-middleware.js')
-const Venue = require('../model/venue.js')
 const venueController = require('../controllers/venue-controller.js')
 
 
@@ -21,19 +18,19 @@ router.get('/api/venues', (req, res, next) => {
 
 // create
 router.post('/api/venues', bearAuth, s3Upload('image'), (req, res, next) => {
-  console.log(req.body)
-  new Venue({
+  console.log('Hola')
+  req.body.owner = req.user._id
+  venueController.create({
     name: req.body.name,
     address: req.body.address,
     capacity: req.body.capacity,
     amenities: req.body.amenities,
     description: req.body.description,
-    images: req.s3Data.Location,
+    image: req.s3Data.Location,
     price: req.body.price,
-    owner: req.user._id.toString(),
-    events: req.events._id.toString(),
+    owner: req.user._id,
+    events: req.body.events,
   })
-    .save()
     .then(venue => res.status(201).json(venue))
     .catch(err => next(err))
 })
@@ -46,15 +43,38 @@ router.get('/api/venues/:id', (req, res, next) => {
 })
 
 // update
-router.put('/api/venues/:id', jsonParser, (req, res, next) => {
-  venueController.update(req.params.id, req.body)
+router.put('/api/venues/:id', bearAuth, s3Upload('image'), (req, res, next) => {
+  venueController.read(req.params.id)
+    .then(venue => {
+      if(!(venue.owner.equals(req.user._id)))
+        throw new Error('forbidden')
+      return venueController.update(req.params.id, {
+        name: req.body.name,
+        address: req.body.address,
+        capacity: req.body.capacity,
+        amenities: req.body.amenities,
+        description: req.body.description,
+        image: req.s3Data.Location,
+        price: req.body.price,
+        owner: req.user._id.toString(),
+        events: req.events._id.toString(),
+      })
+    })
     .then(venue => res.status(200).json(venue))
-    .catch(err => next(err))
+    .catch(err => {
+      console.log(err)
+      next(err)
+    })
 })
 
 // destroy
-router.delete('/api/venues/:id', (req, res, next) => {
-  venueController.destroy(req.params.id)
+router.delete('/api/venues/:id', bearAuth, (req, res, next) => {
+  venueController.read(req.params.id)
+    .then(venue => {
+      if(!(venue.owner.equals(req.user._id)))
+        throw new Error('forbidden')
+      return venueController.destroy(req.params.id)
+    })
     .then(() => res.status(204).send())
     .catch(err => next(err))
 })
