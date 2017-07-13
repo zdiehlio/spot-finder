@@ -19,6 +19,8 @@ router.get('/api/venues', (req, res, next) => {
 // create
 router.post('/api/venues', bearAuth, s3Upload('image'), (req, res, next) => {
   // req.body.owner = req.user._id
+  console.log(req.body)
+  console.log(req.user)
   const venue = Object.assign({}, req.body, {
     owner: req.user._id,
     events: [],
