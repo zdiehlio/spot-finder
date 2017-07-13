@@ -10,6 +10,11 @@ module.exports = {
 
   read: (id) => {
     return Venue.findById(id)
+      .then(venue => {
+        if(!venue)
+          throw new Error('objectid failed')
+        return venue
+      })
   },
 
   update: (id, patch) => {

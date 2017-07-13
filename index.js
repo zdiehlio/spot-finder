@@ -1,4 +1,4 @@
 'use strict'
 
-require('dotenv').config()
+require('dotenv').config({ path: `${__dirname}/.env` })
 require('./lib/server.js').start()
