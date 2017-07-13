@@ -1,4 +1,4 @@
-## Spot-Finder REST API
+# Spot-Finder REST API
 
 ## Overview
 This RESTful API was created to help people find and post venue for meetup or events, When a user signup they create a profile where he can decide to either look for venue or post his venue for other user to find and use. When a user sign up a venue owner they can list there venue for other to use they have the option to upload capacity size, amenities, images, price.
@@ -30,9 +30,9 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblNlZWQiOiJiOTAxY2YzZTAwNTE2Y2I0Mzg
 
 Required Data:
 
-  Authorization header
+  * Authorization header
 
-  Provide username and password as JSON
+  * Provide username and password as JSON
 
 This route will require an authorization header that needs to include the `username:password` of the specific user to be authenticated. Signing in will return a brand new token.
 
@@ -40,14 +40,35 @@ Example response:
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlblNlZWQiOiJkOWViZjM4ODRmODFkNjg4NWMxZTljNjhkYWYwOTI3NmYxMzhhODcxZjZkZmM3NzIyOTc3MTdmNmJkNjFlYzQ2IiwiaWF0IjoxNDk5OTcyODg2fQ.HlPWON2qo8jzjYqt5cGBpwDr-gCKQmRJh4TOPveErmM
 ```
+## Venue GET /api/venues
+
+This route will return one page  with a list of 20 venue if no query is provide it will return a page of venues in alphabetical order by default.
+
+Example Venue:
+
+```
+{ name: 'Gibson - Dickens',
+ address: '89099 Lemke Locks',
+ capacity: 21,
+ amenities:
+  [ 'mission-critical productize mindshare',
+    'end-to-end iterate e-commerce',
+    'viral orchestrate web services' ],
+ description: 'Eum ut eos quos possimus qui perspiciatis.',
+ images: [],
+ price: 0,
+ owner: null,
+ events: [] }
+
+```
+
 
 ## Venue POST /api/venues
 
-Required Data:
+* Authorization Header
+  * `Bearer <response token from signin>`
 
-Provide userID
-
-This route is used to create a venue.
+This route is used to create a venue, A venue will be created  once a user's token is verified. when creating venue you provide information about the venue like name, address, capacity, amenities, description and images.
 
 Example Venue:
 
@@ -66,21 +87,43 @@ Example Venue:
  events: [] }
 ```
 
-## Event POST /api/events
-
-Required Data:
-
-Provide userID
-
-This route is used to POST events.
-
 ## Event GET /api/events
 
-Required Data:
-
-Provide userID
 
 This route is used to GET events.  
+
+{ name: 'cyan, mission-critical scale',
+  start: moment("2017-07-16T04:39:13.204"),
+  end: moment("2017-07-17T00:39:13.204"),
+  numberOfPeople: 181,
+  venue: null,
+  owner: null }
+
+## Event POST /api/events
+Required data:
+
+Required in the body of request:
+
+* name: 'example location'
+* start: 'example moment'
+* end: 'example moment'
+* numberOfPeople: 'example numberOfPeople'
+
+* Authorization:
+
+* needs to be done in the following way: `Bearer <response token from signin>`
+
+This route will create a new event that will include the name of the event and date. userId is required and is used to tie the user to the new event.
+
+Example event:
+```
+{ name: 'ivory, B2B repurpose',
+  start: moment("2017-07-23T10:40:04.016"),
+  end: moment("2017-07-23T18:40:04.016"),
+  numberOfPeople: 15,
+  venue: null,
+  owner: null }
+```
 
 ## Event PUT /api/events
 
