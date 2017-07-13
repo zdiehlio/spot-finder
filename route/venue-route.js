@@ -5,6 +5,7 @@ const jsonParser = require('body-parser').json()
 const Router = require('express').Router
 const router = new Router()
 const venueController = require('../controllers/venue-controller.js')
+const bearerAuth = require('../lib/bear-auth-middleware.js')
 
 
 const PAGE_LENGTH = 20
@@ -17,7 +18,8 @@ router.get('/api/venues', (req, res, next) => {
 })
 
 // create
-router.post('/api/venues', jsonParser, (req, res, next) => {
+router.post('/api/venues', jsonParser, bearerAuth, (req, res, next) => {
+  req.body.owner = req.user._id
   venueController.create(req.body)
     .then(venue => res.status(201).json(venue))
     .catch(err => next(err))
@@ -31,15 +33,25 @@ router.get('/api/venues/:id', (req, res, next) => {
 })
 
 // update
-router.put('/api/venues/:id', jsonParser, (req, res, next) => {
-  venueController.update(req.params.id, req.body)
+router.put('/api/venues/:id', jsonParser, bearerAuth, (req, res, next) => {
+  venueController.read(req.params.id)
+    .then(venue => {
+      if(!(venue.owner.equals(req.user._id)))
+        throw new Error('forbidden')
+      return venueController.update(req.params.id, req.body)
+    })
     .then(venue => res.status(200).json(venue))
     .catch(err => next(err))
 })
 
 // destroy
-router.delete('/api/venues/:id', (req, res, next) => {
-  venueController.destroy(req.params.id)
+router.delete('/api/venues/:id', bearerAuth, (req, res, next) => {
+  venueController.read(req.params.id)
+    .then(venue => {
+      if(!(venue.owner.equals(req.user._id)))
+        throw new Error('forbidden')
+      return venueController.destroy(req.params.id)
+    })
     .then(() => res.status(204).send())
     .catch(err => next(err))
 })
