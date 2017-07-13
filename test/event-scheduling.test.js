@@ -146,29 +146,11 @@ describe('event scheduling', () => {
       })
       .then(venue => venueId = venue._id)
       .then(() => mockEvent.createOne())
-      .then(event => {
-        console.log(event)
-        console.log('start: ', event.start.toString())
-        console.log('end:   ', event.end.toString())
-        return event
-      })
       .then(event => eventId = event._id)
       .then(() => {
         return eventController.update(eventId, { venue: venueId })
       })
       .then(() => Venue.findById(venueId))
-      .then(venue => {
-        console.log('venue after event added: ')
-        console.log(venue)
-        // FIXME: the two values are equal but venue.events[0] === eventId -> false !??!?!?!?!
-        // seems venue.events[0] is an object while eventId is a number
-        console.log('venue#events[0]', venue.events[0])
-        console.log('eventid        ', eventId)
-        console.log('they are equal: ', venue.events[0].equals(eventId))
-        console.log('typeof venue#events[0]: ', typeof venue.events[0])
-        console.log('typeof eventid: ', typeof eventId)
-        return venue
-      })
       .then(venue => expect(venue.events.some(id => id.equals(eventId))).toBe(true))
   })
 
