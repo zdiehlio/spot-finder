@@ -18,6 +18,8 @@ const doTimesOverlap = (testTime, start, end) => (
   testTime.isBetween(start, end, null, '[]'))
 
 const isVenueBookable = (venue, event) => {
+  if(venue.events.length < 1)
+    return Promise.resolve(true)
   return Promise.all(venue.events.map((event) => Event.findById(event)))
     .then(events => {
       return events.some(bookedEvent => !(
@@ -117,7 +119,7 @@ module.exports = {
   },
 
   destroy: (id) => {
-    return Event.findByIdAndRemove(id)
+    return Event.findById(id).remove()
   },
 
   index: (pageLength, pageNumber) => {

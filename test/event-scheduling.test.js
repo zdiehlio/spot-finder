@@ -11,7 +11,7 @@ const Venue = require('../model/venue.js')
 const mockEvent = require('./lib/mock-event.js')
 const mockVenue = require('./lib/mock-venue.js')
 
-describe('event scheduling', () => {
+describe.only('event scheduling', () => {
   before(() => {
     dotenv.config({ path: `${__dirname}/../.test.env`})
     mongoose.Promise = Promise
@@ -135,6 +135,38 @@ describe('event scheduling', () => {
       })
       .then(() => expect(true).toBe(false)) // should be unreachable test
       .catch(err => expect(err.message).toEqual('venue is already booked'))
+  })
+
+  it.only('should schedule an event ok when using update', () => {
+    let venueId, eventId
+    return mockVenue.createOne()
+      .then(venue => {
+        console.log(venue)
+        return venue
+      })
+      .then(venue => venueId = venue._id)
+      .then(() => mockEvent.createOne())
+      .then(event => {
+        console.log(event)
+        console.log('start: ', event.start.toString())
+        console.log('end:   ', event.end.toString())
+        return event
+      })
+      .then(event => eventId = event._id)
+      .then(() => {
+        return eventController.update(eventId, { venue: venueId })
+      })
+      .then(() => Venue.findById(venueId))
+      .then(venue => {
+        console.log('venue after event added: ')
+        console.log(venue)
+        // FIXME: the two values are equal but venue.events[0] === eventId -> false !??!?!?!?!
+        // seems venue.events[0] is an object while eventId is a number
+        console.log('venue#events[0]', venue.events[0])
+        console.log('eventid        ', eventId)
+        return venue
+      })
+      .then(venue => expect(venue.events.includes(eventId)).toBe(true))
   })
 
 
