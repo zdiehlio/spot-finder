@@ -45,7 +45,6 @@ module.exports = {
           throw new Error('no such venue')
         })
         .then(venue => {
-          console.log(venue)
           return isVenueBookable(venue, event)
         })
         .then(isBookable => {
@@ -63,6 +62,11 @@ module.exports = {
 
   read: (id) => {
     return Event.findById(id)
+      .then(event => {
+        if(!event)
+          throw new Error('objectid failed')
+        return event
+      })
   },
 
   update: (id, patch) => {
