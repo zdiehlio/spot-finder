@@ -1,5 +1,6 @@
 'use strict'
 
+require('./lib/mock-aws.js')
 const dotenv = require('dotenv')
 dotenv.config({ path: `${__dirname}/../.test.env`})
 const superagent = require('superagent')
@@ -14,13 +15,12 @@ const ENDPOINT = `http://localhost:${process.env.PORT}/api/venues`
 const ROOT_URL = `http://localhost:${process.env.PORT}`
 
 describe('venue routes', () => {
-
   let testUserInfo
+  let otherUserInfo
 
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Venue.remove({}))
@@ -32,6 +32,14 @@ describe('venue routes', () => {
           .set('Authorization', `Basic ${encoded}`)
       })
       .then(res => testUserInfo.returnedToken = res.text)
+      .then(() => mockUser.createOne())
+      .then(userInfo => otherUserInfo = userInfo)
+      .then(userInfo => {
+        let encoded = new Buffer(`${userInfo.user.username}:${userInfo.pass}`).toString('base64')
+        return superagent.get(`${ROOT_URL}/api/signin`)
+          .set('Authorization', `Basic ${encoded}`)
+      })
+      .then(res => otherUserInfo.returnedToken = res.text)
   })
 
   after(() => server.stop())
@@ -39,11 +47,15 @@ describe('venue routes', () => {
   let testVenue, testVenueId
   it('should create a venue', () => {
     return Promise.resolve(mockVenue.createOneTestCase())
-      .then(venue => testVenue = venue)
       .then(venue => {
+        testVenue = venue
         return superagent.post(ENDPOINT)
           .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
-          .send(venue)
+          .field('name', venue.name)
+          .field('address', venue.address)
+          .field('capacity', venue.capacity)
+          .attach('image', `${__dirname}/assets/venue.jpg`)
+          // .send(venue)
           .then(res => {
             expect(res.status).toEqual(201)
             expect(res.body.name).toEqual(testVenue.name)
@@ -88,7 +100,7 @@ describe('venue routes', () => {
   it('should update a venue', () => {
     return superagent.put(`${ENDPOINT}/${testVenueId}`)
       .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
-      .send(updatedVenue)
+      .field('name', 'joes pizza')
       .then(res => {
         expect(res.status).toEqual(200)
         expect(res.body.name).toEqual(updatedVenue.name)
@@ -102,6 +114,13 @@ describe('venue routes', () => {
       .catch(err => expect(err.status).toEqual(401))
   })
 
+  it('should respond 403 when updating a venue with the wrong auth', () => {
+    return superagent.put(`${ENDPOINT}/${testVenueId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .send(updatedVenue)
+      .catch(err => expect(err.status).toEqual(403))
+  })
+
   it('should 404 when updating a nonexistent venue', () => {
     return superagent.put(`${ENDPOINT}/12345`)
       .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
@@ -112,6 +131,12 @@ describe('venue routes', () => {
   it('should 401 when deleting a venue without auth', () => {
     return superagent.delete(`${ENDPOINT}/${testVenueId}`)
       .catch(err => expect(err.status).toEqual(401))
+  })
+
+  it('should 403 when deleting a venue with the wrong auth', () => {
+    return superagent.delete(`${ENDPOINT}/${testVenueId}`)
+      .set('Authorization', `Bearer ${otherUserInfo.returnedToken}`)
+      .catch(err => expect(err.status).toEqual(403))
   })
 
   it('should delete a venue', () => {

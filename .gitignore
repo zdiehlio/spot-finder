@@ -74,3 +74,6 @@ tags
 
 # coverage
 .nyc_output
+
+# multer temp output
+temp-assets/

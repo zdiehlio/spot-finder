@@ -141,7 +141,6 @@ describe('event scheduling', () => {
     let venueId, eventId
     return mockVenue.createOne()
       .then(venue => {
-        console.log(venue)
         return venue
       })
       .then(venue => venueId = venue._id)

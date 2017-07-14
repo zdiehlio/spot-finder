@@ -1,3 +1,5 @@
+require('./lib/mock-aws.js')
+
 const expect = require('expect')
 const superagent = require('superagent')
 
@@ -5,6 +7,7 @@ const server = require('../lib/server.js')
 const Event = require('../model/event.js')
 const Venue = require('../model/venue.js')
 const mockFullDatabase = require('./lib/mock-full-database.js')
+const mockUser = require('./lib/mock-user.js')
 
 const API_URL = `http://localhost:${process.env.PORT}/api`
 const VENUE_PAGE_LENGTH = 20
@@ -12,15 +15,24 @@ const EVENT_PAGE_LENGTH = 20
 
 describe('index routes & scheduling conflicts', () => {
 
+  let testUserInfo
+
   before(() => {
     return server.start()
       .catch(err => {
-        console.log(err)
         throw err
       })
       .then(() => Event.remove({}))
       .then(() => Venue.remove({}))
       .then(() => mockFullDatabase())
+      .then(() => mockUser.createOne())
+      .then(userInfo => testUserInfo = userInfo)
+      .then(userInfo => {
+        let encoded = new Buffer(`${userInfo.user.username}:${userInfo.pass}`).toString('base64')
+        return superagent.get(`${API_URL}/signin`)
+          .set('Authorization', `Basic ${encoded}`)
+      })
+      .then(res => testUserInfo.returnedToken = res.text)
   })
 
   after(() => server.stop())
@@ -90,11 +102,12 @@ describe('index routes & scheduling conflicts', () => {
       .then(events => events[0])
       .then(event => {
         return superagent.post(`${API_URL}/events`)
+          .set('Authorization', `Bearer ${testUserInfo.returnedToken}`)
           .send({
             name: 'coffee with yancy',
             numberOfPeople: 3,
-            start: event.start,
-            end: event.end,
+            start: event.start.clone().add(1, 'minute'),
+            end: event.end.clone().subtract(1, 'minute'),
             venue: event.venue,
           })
           .catch(err => expect(err.status).toBe(409))
